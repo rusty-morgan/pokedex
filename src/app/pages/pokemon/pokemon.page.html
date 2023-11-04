@@ -1,0 +1,55 @@
+<ng-container *ngIf="status$ | async as status">
+  <ion-header [translucent]="true" *ngIf="status === 'loading'">
+    <ion-toolbar>
+      <ion-title>Loading...</ion-title>
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </ion-toolbar>
+  </ion-header>
+  <ion-header [translucent]="true" *ngIf="status === 'error'">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/home"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Error occurs</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ng-container *ngIf="pokemon$ | async as pokemon">
+    <ion-header [translucent]="true">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button defaultHref="/home"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ pokemon.name | titlecase }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content [fullscreen]="true">
+      <ion-card [color]="pokemon.types[0].type.name">
+        <ion-img
+          alt="{{ pokemon.name | titlecase }}"
+          [src]="pokemon.sprites.other['official-artwork'].front_default"
+        />
+        <ion-card-header>
+          <ion-card-title>{{ pokemon.name | titlecase }}</ion-card-title>
+          <ion-card-subtitle>
+            Experience Points: {{ pokemon.base_experience }}
+          </ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ng-container *ngFor="let stat of pokemon.stats">
+            <ion-text>{{ stat.stat.name | titlecase }}</ion-text>
+            <ion-progress-bar
+              color="secondary"
+              class="ion-margin-bottom"
+              [value]="stat.base_stat/100"
+            ></ion-progress-bar>
+          </ng-container>
+        </ion-card-content>
+      </ion-card>
+    </ion-content>
+  </ng-container>
+</ng-container>
+<ng-container *ngIf="error$ | async as msg">
+  <ion-alert [isOpen]="msg" header="Error" [message]="msg"></ion-alert>
+</ng-container>
